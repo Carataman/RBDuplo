@@ -6,8 +6,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import List, Optional, Dict, Any
 
-from app.core.models import ViolationData  # Модель данных из core/models.py
-from app.utils.exceptions import ParserError
+import models # Модель данных из core/models.py
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +21,7 @@ class JpegParser:
         """
         self.config = config or {}
 
-    def parse(self, jpeg_data: bytes) -> Optional[ViolationData]:
+    def parse(self, jpeg_data: bytes) -> Optional[models]:
         """Основной метод парсинга JPEG данных"""
         try:
             # Извлекаем все JPEG изображения
@@ -117,9 +116,9 @@ class JpegParser:
                         logger.warning("Failed to parse JSON fragment")
         return json_objects
 
-    def _create_violation(self, jpeg_frames: List[str], data: Dict[str, Any]) -> ViolationData:
+    def _create_violation(self, jpeg_frames: List[str], data: Dict[str, Any]) -> models:
         """Создает объект ViolationData из распарсенных данных"""
-        violation = ViolationData()
+        violation = models()
 
         # Заполнение фото
         violation.v_photo_ts = jpeg_frames[0]
@@ -139,12 +138,12 @@ class JpegParser:
 
         return violation
 
-    def _fill_device_info(self, violation: ViolationData, data: Dict[str, Any]):
+    def _fill_device_info(self, violation: models, data: Dict[str, Any]):
         """Заполняет информацию об устройстве"""
         violation.v_camera = data.get('name_speed_meter')
         violation.v_camera_serial = data.get('factory_number')
 
-    def _fill_place_info(self, violation: ViolationData, data: Dict[str, Any]):
+    def _fill_place_info(self, violation: models, data: Dict[str, Any]):
         """Заполняет информацию о месте установки"""
         violation.v_camera_place = data.get('place')
         violation.v_direction = "Попутное" if data.get('direction') == 0 else "Встречное"
@@ -152,7 +151,7 @@ class JpegParser:
         violation.v_gps_x = self._parse_coordinate(data.get("latitude", "0"))
         violation.v_gps_y = self._parse_coordinate(data.get("longitude", "0"))
 
-    def _fill_violation_info(self, violation: ViolationData, data: Dict[str, Any]):
+    def _fill_violation_info(self, violation: models, data: Dict[str, Any]):
         """Заполняет информацию о нарушении"""
         violation.v_time_check = self._parse_timestamp(data)
         violation.v_speed = data.get('speed')
@@ -161,7 +160,7 @@ class JpegParser:
         violation.v_patrol_speed = data.get('self_speed')
         violation.v_pr_viol = [data.get('crime_reason')]
 
-    def _fill_recogniser_info(self, violation: ViolationData, data: Dict[str, Any]):
+    def _fill_recogniser_info(self, violation: models, data: Dict[str, Any]):
         """Заполняет информацию о распознавании"""
         violation.v_regno = data.get('plate_chars', '').replace("|", "")
         violation.v_regno_country_id = data.get('plate_code')

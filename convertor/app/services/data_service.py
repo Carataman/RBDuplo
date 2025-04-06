@@ -1,5 +1,5 @@
 from typing import Dict
-from app.core.jpeg_parser import JpegParser
+from ..core.jpeg_parser import JpegParser
 
 
 class DataService:
