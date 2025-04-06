@@ -38,7 +38,7 @@ def load_config() -> Dict[str, Any]:
             logger.info(f"Успешно загружен {conf_path}")
         else:
             logger.warning(f"Файл configuration.json не найден, используются значения по умолчанию")
-            config.setdefault('start_date', '1970-01-01')
+            config.setdefault('start_date', '2025-04-01')
 
         # Валидация обязательных параметров
         if 'database' not in config:

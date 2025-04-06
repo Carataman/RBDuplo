@@ -1,15 +1,16 @@
 import logging
 from datetime import datetime
 from typing import Dict, Any
-from ..core.database import DatabaseConnect
-from ..core.ftp_client import FTPClient
-from ..core.jpeg_parser import JpegParser
-from ..services.api_service import SendToServer
+from convertor.app.core.database import DatabaseConnect
+from convertor.app.core.ftp_client import FTPClient
+from convertor.app.core.jpeg_parser import JpegParser
+from convertor.app.services.api_service import SendToServer
 logger = logging.getLogger(__name__)
 
 
 class DataProcessingService:
     def __init__(self, config: Dict[str, Any]):
+
         self.config = config
         self._initialize_components()
 

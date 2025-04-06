@@ -1,6 +1,6 @@
 from typing import Optional, Dict
-from ..core.ftp_client import FTPClient
-from ..utils.config_loader import load_config
+from convertor.app.core.ftp_client import FTPClient
+from  convertor.app.utils.config_loader import load_config
 
 
 class PhotoService:

@@ -3,10 +3,10 @@ import json
 import logging
 import re
 from datetime import datetime, timedelta
-from pathlib import Path
+
 from typing import List, Optional, Dict, Any, Union
 
-from models import ViolationData
+from convertor.app.core.models import ViolationData
 
 
 logger = logging.getLogger(__name__)

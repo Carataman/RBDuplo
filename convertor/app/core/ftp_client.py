@@ -1,7 +1,7 @@
 import logging
 from ftplib import FTP
 from io import BytesIO
-from pathlib import Path
+
 from typing import Optional, Dict, Any
 import os
 

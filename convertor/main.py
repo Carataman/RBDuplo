@@ -1,8 +1,13 @@
 import logging
 
-from app.services.data_service import DataProcessingService
-from app.utils.config_loader import load_config
-from app.utils.logger import setup_logging
+import sys
+from pathlib import Path
+
+# Добавляем корень проекта в PYTHONPATH
+sys.path.append(str(Path(__file__).parent.parent))
+from convertor.app.services.data_service import DataProcessingService
+from  convertor.app.utils.config_loader import load_config
+from  convertor.app.utils.logger import setup_logging
 
 
 def main():
