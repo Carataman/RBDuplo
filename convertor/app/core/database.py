@@ -10,33 +10,42 @@ class DatabaseConnect:
     def __init__(self, config: Dict):
         """
         Args:
-            config: Полный загруженный конфиг (должен содержать 'database' и другие параметры)
+            config: Должен содержать ключи:
+                   dbname, user, password, host, port
         """
-        self.config = config  # Сохраняем весь конфиг
+        if not config:
+            raise ValueError("Не передана конфигурация БД")
+
+        self.config = config
         self.connection = self._connect()
 
     def _connect(self):
-        """Подключение к PostgreSQL"""
-        try:
-            if 'database' not in self.config:
-                raise ValueError("Отсутствует конфигурация БД")
+        """Подключение к PostgreSQL с проверкой параметров"""
+        required_keys = {'dbname', 'user', 'password', 'host', 'port'}
+        missing = required_keys - set(self.config.keys())
 
-            conn = psycopg2.connect(**self.config['database'])
-            logger.info("Подключение к PostgreSQL успешно!")
+        if missing:
+            raise ValueError(f"В конфиге БД отсутствуют ключи: {missing}")
+
+        try:
+            conn = psycopg2.connect(**self.config)
+            logger.info("Успешное подключение к PostgreSQL")
             return conn
         except psycopg2.Error as e:
-            logger.error(f"Ошибка подключения к БД: {e}")
+            logger.error(f"Ошибка подключения: {e}")
             raise
 
-    def fetch_data(self) -> List[Dict]:
+    def get_new_violations(self) -> List[Dict]:
         """Получает данные из БД с учётом start_date из конфига"""
         if not self.connection:
             logger.error("Нет подключения к БД")
             return []
 
         try:
-            # Получаем start_date из общего конфига
-            start_date = self.config.get('start_date', '1970-01-01')
+            # Правильное получение start_date из вложенной структуры
+            start_date = self.config.get('processing', {}).get('start_date', '1970-01-01 00:00:00')
+
+            logger.info(f"Используется start_date: {start_date}")
 
             with self.connection.cursor(cursor_factory=DictCursor) as cursor:
                 cursor.execute("""
@@ -46,7 +55,11 @@ class DatabaseConnect:
                     ORDER BY timestamp ASC 
                     LIMIT 1;
                 """, (start_date,))
-                return cursor.fetchall()
+
+                result = cursor.fetchall()
+                logger.info(f"Найдено нарушений: {len(result)}")
+                return result
+
         except psycopg2.Error as e:
             logger.error(f"Ошибка выполнения запроса: {e}")
             return []

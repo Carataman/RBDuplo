@@ -9,17 +9,31 @@ logger = logging.getLogger(__name__)
 
 
 class DataProcessingService:
-    def __init__(self, config: Dict[str, Any]):
-
-        self.config = config
+    def __init__(self, config: dict):  # Принимаем config как параметр
+        self.config = config  # Сохраняем конфиг в объекте
         self._initialize_components()
 
     def _initialize_components(self):
-        """Инициализация всех компонентов"""
+        """Инициализация компонентов с проверкой конфигов"""
+        self.db = DatabaseConnect(self.config['database'])
+        required_configs = {
+            'database': "Не найдена конфигурация базы данных",
+            'ftp': "Не найдена конфигурация FTP",
+            'api': "Не найдена конфигурация API"
+        }
+
+        # Проверяем наличие всех необходимых секций
+        for key, error_msg in required_configs.items():
+            if key not in self.config:
+                raise ValueError(error_msg)
+
+        # Инициализация компонентов
         self.db = DatabaseConnect(self.config['database'])
         self.ftp = FTPClient(self.config['ftp'])
-        self.parser = JpegParser(self.config.get('parsing', {}))
         self.api = SendToServer(self.config['api'])
+        self.parser = JpegParser(self.config.get('parsing', {}))
+
+
 
     def run_processing_flow(self):
         """Основной workflow приложения"""

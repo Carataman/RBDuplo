@@ -1,6 +1,11 @@
 {
-  "server_url": "http://172.21.36.63:8080/send",
-  "start_date": "2025-02-19 12:00:00",
-  "utc": "+03:00"
-
+  "api": {
+    "api_url": "http://172.21.36.63:8080",
+    "timeout": 30,
+    "endpoint": "/send"
+  },
+  "processing": {
+    "start_date": "2025-02-19 12:00:00",
+    "utc_offset": "+03:00"
+  }
 }

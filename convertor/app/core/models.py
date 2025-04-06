@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 from typing import Optional, List
 
 @dataclass
@@ -25,6 +25,9 @@ class ViolationData:
     v_photo_ts: str = ""
     v_photo_extra: List[str] = None
 
+    def to_dict(self) -> dict:
+        """Преобразует объект в словарь"""
+        return asdict(self)
 
     def __post_init__(self):
         """Инициализация списков после создания объекта"""

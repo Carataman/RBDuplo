@@ -7,48 +7,54 @@ logger = logging.getLogger(__name__)
 
 
 def load_config() -> Dict[str, Any]:
-    """Загружает все конфиги из папки conf"""
+    """Загрузка и объединение конфигурационных файлов"""
+    config = {}
+    base_dir = Path(__file__).parent.parent.parent
+    conf_dir = base_dir  / "conf"
+
+    if not conf_dir.exists():
+        raise FileNotFoundError(f"Директория с конфигами не найдена: {conf_dir}")
+
+    # 1. Загрузка connection.json (обязательный)
+    conn_path = conf_dir / "connection.json"
     try:
-        # Определяем правильный путь к папке conf
-        current_file = Path(__file__).absolute()
-        project_root = current_file.parent.parent.parent  # Поднимаемся на 3 уровня вверх
-        conf_dir = project_root / "conf"
-
-        logger.debug(f"Ищем конфиги в: {conf_dir}")
-
-        if not conf_dir.exists():
-            raise FileNotFoundError(f"Папка conf не найдена по пути: {conf_dir}")
-
-        config = {}
-
-        # Загрузка connection.json
-        conn_path = conf_dir / "connection.json"
-        if conn_path.exists():
-            with open(conn_path, 'r', encoding='utf-8') as f:
-                config.update(json.load(f))
-            logger.info(f"Успешно загружен {conn_path}")
-        else:
-            raise FileNotFoundError(f"Файл connection.json не найден в {conf_dir}")
-
-        # Загрузка configuration.json
-        conf_path = conf_dir / "configuration.json"
-        if conf_path.exists():
-            with open(conf_path, 'r', encoding='utf-8') as f:
-                config.update(json.load(f))
-            logger.info(f"Успешно загружен {conf_path}")
-        else:
-            logger.warning(f"Файл configuration.json не найден, используются значения по умолчанию")
-            config.setdefault('start_date', '2025-04-01')
-
-        # Валидация обязательных параметров
-        if 'database' not in config:
-            raise ValueError("Отсутствует секция 'database' в конфигурации")
-
-        return config
-
-    except json.JSONDecodeError as e:
-        logger.error(f"Ошибка формата JSON в конфиге: {e}")
-        raise
+        with open(conn_path, 'r', encoding='utf-8') as f:
+            config.update(json.load(f))
+        logger.info(f"Успешно загружен {conn_path}")
     except Exception as e:
-        logger.error(f"Критическая ошибка загрузки конфигов: {e}")
-        raise RuntimeError(f"Не удалось загрузить конфигурацию: {e}")
+        logger.critical(f"Ошибка загрузки connection.json: {e}")
+        raise
+
+    # 2. Загрузка configuration.json (опциональный)
+    conf_path = conf_dir / "configuration.json"
+    try:
+        with open(conf_path, 'r', encoding='utf-8') as f:
+            configuration = json.load(f)
+
+            # Правильное объединение вложенных структур
+            for key, value in configuration.items():
+                if key in config:
+                    if isinstance(value, dict) and isinstance(config[key], dict):
+                        config[key].update(value)
+                    else:
+                        config[key] = value
+                else:
+                    config[key] = value
+
+        logger.info(f"Успешно загружен {conf_path}")
+    except FileNotFoundError:
+        logger.warning("Файл configuration.json не найден, используются значения по умолчанию")
+    except Exception as e:
+        logger.error(f"Ошибка загрузки configuration.json: {e}")
+
+    # Установка значений по умолчанию
+    config.setdefault('processing', {}).setdefault('start_date', '1970-01-01 00:00:00')
+
+    # Валидация обязательных параметров
+    required_sections = ['database']
+    for section in required_sections:
+        if section not in config:
+            raise ValueError(f"Отсутствует обязательная секция '{section}' в конфигурации")
+
+    logger.debug(f"Полная загруженная конфигурация:\n{json.dumps(config, indent=2)}")
+    return config

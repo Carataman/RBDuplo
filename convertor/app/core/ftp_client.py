@@ -36,7 +36,7 @@ class FTPClient:
             logger.error(f"Ошибка подключения FTP: {e}")
             return False
 
-    def download_file(self, remote_path: str) -> Optional[bytes]:
+    def download(self, remote_path: str) -> Optional[bytes]:
         """Загружает файл с FTP в память"""
         if not self.connection:
             if not self.connect():
