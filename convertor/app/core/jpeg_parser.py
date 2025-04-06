@@ -4,64 +4,64 @@ import logging
 import re
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, Union
 
-import models # Модель данных из core/models.py
+from models import ViolationData
+
 
 logger = logging.getLogger(__name__)
 
 
 class JpegParser:
-    """Класс для парсинга JPEG файлов с метаданными нарушений"""
+    """Парсер JPEG файлов с встроенными метаданными о нарушениях"""
+
+    JPEG_MARKERS = (b'\xff\xd8', b'\xff\xd9')  # Маркеры начала/конца JPEG
+    ENCODINGS = ['utf-8', 'windows-1251', 'latin-1']  # Поддерживаемые кодировки
 
     def __init__(self, config: Optional[Dict] = None):
-        """
-        Args:
-            config: Конфигурация парсера (может содержать настройки парсинга)
-        """
+        """Инициализация парсера с конфигурацией"""
         self.config = config or {}
+        self._setup_defaults()
 
-    def parse(self, jpeg_data: bytes) -> Optional[models]:
-        """Основной метод парсинга JPEG данных"""
+    def _setup_defaults(self):
+        """Установка значений по умолчанию"""
+        self.default_coord = 0.0
+        self.default_speed = 0
+        self.default_date = datetime(1970, 1, 1)
+
+    def parse(self, jpeg_data: bytes) -> Optional[ViolationData]:
+        """Основной метод парсинга"""
         try:
-            # Извлекаем все JPEG изображения
-            jpeg_frames = self._extract_jpeg_frames(jpeg_data)
-            if not jpeg_frames:
-                raise ParserError("No JPEG frames found in data")
+            self._validate_input(jpeg_data)
 
-            # Извлекаем JSON данные
-            json_data = self._extract_json_data(jpeg_data)
-            if not json_data:
-                raise ParserError("No JSON metadata found")
+            jpeg_frames = self._extract_frames(jpeg_data)
+            json_data = self._extract_json(jpeg_data)
+            parsed_data = self._parse_json(json_data)
 
-            # Парсим JSON
-            parsed_objects = self._parse_json_data(json_data)
-            if not parsed_objects:
-                raise ParserError("No valid JSON objects found")
-
-            # Создаем и заполняем объект нарушения
-            violation = self._create_violation(jpeg_frames, parsed_objects[-1])
-            return violation
+            return self._build_violation(jpeg_frames, parsed_data)
 
         except Exception as e:
-            logger.error(f"Failed to parse JPEG: {str(e)}", exc_info=True)
+            logger.error(f"Parser error: {e}", exc_info=True)
             return None
 
-    def _extract_jpeg_frames(self, data: bytes) -> List[str]:
-        """Извлекает JPEG кадры и конвертирует в base64"""
+    def _validate_input(self, data: bytes):
+        """Проверка входных данных"""
+        if not data or len(data) < 10:
+            raise ParserError("Invalid or empty input data")
+        if not data.startswith(self.JPEG_MARKERS[0]):
+            raise ParserError("Not a valid JPEG file")
+
+    def _extract_frames(self, data: bytes) -> List[str]:
+        """Извлечение JPEG фреймов"""
         frames = []
         pos = 0
-        start_marker = b'\xff\xd8'
-        end_marker = b'\xff\xd9'
 
         while pos < len(data):
-            start_pos = data.find(start_marker, pos)
-            if start_pos == -1:
-                break
+            start_pos = data.find(self.JPEG_MARKERS[0], pos)
+            if start_pos == -1: break
 
-            end_pos = data.find(end_marker, start_pos)
-            if end_pos == -1:
-                break
+            end_pos = data.find(self.JPEG_MARKERS[1], start_pos)
+            if end_pos == -1: break
 
             frame = data[start_pos:end_pos + 2]
             frames.append(base64.b64encode(frame).decode('utf-8'))
@@ -69,126 +69,145 @@ class JpegParser:
 
         return frames
 
-    def _extract_json_data(self, data: bytes) -> Optional[bytes]:
-        """Извлекает JSON метаданные после JPEG"""
-        last_jpeg_end = data.rfind(b'\xff\xd9')
-        return data[last_jpeg_end + 2:] if last_jpeg_end != -1 else None
+    def _extract_json(self, data: bytes) -> bytes:
+        """Извлечение JSON данных"""
+        last_frame_end = data.rfind(self.JPEG_MARKERS[1])
+        return data[last_frame_end + 2:] if last_frame_end != -1 else b''
 
-    def _parse_json_data(self, json_data: bytes) -> List[Dict[str, Any]]:
-        """Парсит JSON данные с обработкой разных кодировок"""
-        json_str = self._decode_json_data(json_data)
-        return self._parse_json_string(json_str)
+    def _parse_json(self, data: bytes) -> List[Dict[str, Any]]:
+        """Парсинг JSON данных"""
+        json_str = self._decode_data(data)
+        try:
+            parsed = json.loads(json_str)
+            return [parsed] if not isinstance(parsed, list) else parsed
+        except json.JSONDecodeError:
+            return self._parse_fragmented(json_str)
 
-    def _decode_json_data(self, data: bytes) -> str:
-        """Декодирует байты в строку с учетом разных кодировок"""
-        for encoding in ['utf-8', 'windows-1251', 'latin-1']:
+    def _decode_data(self, data: bytes) -> str:
+        """Декодирование с учетом кодировок"""
+        for encoding in self.ENCODINGS:
             try:
                 return data.decode(encoding).strip()
             except UnicodeDecodeError:
                 continue
         raise ParserError("Failed to decode JSON data")
 
-    def _parse_json_string(self, json_str: str) -> List[Dict[str, Any]]:
-        """Парсит JSON строку, обрабатывая возможные ошибки"""
-        try:
-            parsed = json.loads(json_str)
-            return [parsed] if not isinstance(parsed, list) else parsed
-        except json.JSONDecodeError:
-            return self._parse_fragmented_json(json_str)
-
-    def _parse_fragmented_json(self, json_str: str) -> List[Dict[str, Any]]:
-        """Обрабатывает фрагментированный JSON"""
-        json_objects = []
+    def _parse_fragmented(self, json_str: str) -> List[Dict[str, Any]]:
+        """Обработка фрагментированного JSON"""
+        result = []
         buffer = ""
-        brace_count = 0
+        depth = 0
 
         for char in json_str:
             buffer += char
             if char == '{':
-                brace_count += 1
+                depth += 1
             elif char == '}':
-                brace_count -= 1
-                if brace_count == 0:
+                depth -= 1
+                if depth == 0:
                     try:
-                        json_objects.append(json.loads(buffer))
+                        result.append(json.loads(buffer))
                         buffer = ""
                     except json.JSONDecodeError:
-                        logger.warning("Failed to parse JSON fragment")
-        return json_objects
+                        logger.warning("Invalid JSON fragment")
+        return result
 
-    def _create_violation(self, jpeg_frames: List[str], data: Dict[str, Any]) -> models:
-        """Создает объект ViolationData из распарсенных данных"""
-        violation = models()
+    def _build_violation(self, frames: List[str], data: List[Dict]) -> ViolationData:
+        """Создание объекта нарушения"""
+        if not frames or not data:
+            raise ParserError("Insufficient data to build violation")
 
-        # Заполнение фото
-        violation.v_photo_ts = jpeg_frames[0]
-        violation.v_photo_extra = jpeg_frames[1:] if len(jpeg_frames) > 1 else []
+        violation = ViolationData()
+        last_data = data[-1]
 
-        # Извлекаем данные из JSON структуры
-        device_info = data.get('device_info', {})
-        place_info = data.get('installation_place_info', {})
-        violation_info = data.get('violation_info', {})
-        recogniser_info = data.get('recogniser_info', {})
+        # Обработка изображений
+        violation.v_photo_ts = frames[0]
+        violation.v_photo_extra = frames[1:] if len(frames) > 1 else []
 
-        # Заполняем основные поля
-        self._fill_device_info(violation, device_info)
-        self._fill_place_info(violation, place_info)
-        self._fill_violation_info(violation, violation_info)
-        self._fill_recogniser_info(violation, recogniser_info)
+        # Заполнение данных
+        self._fill_from_sections(
+            violation,
+            last_data.get('device_info', {}),
+            last_data.get('installation_place_info', {}),
+            last_data.get('violation_info', {}),
+            last_data.get('recogniser_info', {})
+        )
 
         return violation
 
-    def _fill_device_info(self, violation: models, data: Dict[str, Any]):
-        """Заполняет информацию об устройстве"""
+    def _fill_from_sections(self, violation: ViolationData,
+                            device: Dict, place: Dict,
+                            violation_info: Dict, recogniser: Dict):
+        """Заполнение данных из всех секций"""
+        self._fill_device(violation, device)
+        self._fill_place(violation, place)
+        self._fill_violation(violation, violation_info)
+        self._fill_recogniser(violation, recogniser)
+
+    def _fill_device(self, violation: ViolationData, data: Dict):
+        """Данные устройства"""
         violation.v_camera = data.get('name_speed_meter')
         violation.v_camera_serial = data.get('factory_number')
 
-    def _fill_place_info(self, violation: models, data: Dict[str, Any]):
-        """Заполняет информацию о месте установки"""
-        violation.v_camera_place = data.get('place')
+    def _fill_place(self, violation: ViolationData, data: Dict):
+        """Данные места"""
+        violation.v_camera_place = data.get('place', '')
         violation.v_direction = "Попутное" if data.get('direction') == 0 else "Встречное"
-        violation.v_direction_name = data.get('place_outcoming')
-        violation.v_gps_x = self._parse_coordinate(data.get("latitude", "0"))
-        violation.v_gps_y = self._parse_coordinate(data.get("longitude", "0"))
+        violation.v_direction_name = data.get('place_outcoming', '')
+        violation.v_gps_x = self._parse_float(data.get("latitude"))
+        violation.v_gps_y = self._parse_float(data.get("longitude"))
 
-    def _fill_violation_info(self, violation: models, data: Dict[str, Any]):
-        """Заполняет информацию о нарушении"""
-        violation.v_time_check = self._parse_timestamp(data)
-        violation.v_speed = data.get('speed')
-        violation.v_speed_limit = data.get('speed_threshold')
+    def _fill_violation(self, violation: ViolationData, data: Dict):
+        """Данные нарушения"""
+        violation.v_time_check = self._parse_datetime(data)
+        violation.v_speed = self._parse_int(data.get('speed'))
+        violation.v_speed_limit = self._parse_int(data.get('speed_threshold'))
         violation.v_car_type = data.get('type')
-        violation.v_patrol_speed = data.get('self_speed')
-        violation.v_pr_viol = [data.get('crime_reason')]
+        violation.v_patrol_speed = self._parse_int(data.get('self_speed'), 0)
 
-    def _fill_recogniser_info(self, violation: models, data: Dict[str, Any]):
-        """Заполняет информацию о распознавании"""
-        violation.v_regno = data.get('plate_chars', '').replace("|", "")
+        if reason := data.get('crime_reason'):
+            violation.v_pr_viol = [reason]
+
+    def _fill_recogniser(self, violation: ViolationData, data: Dict):
+        """Данные распознавания"""
+        violation.v_regno = (data.get('plate_chars') or '').replace("|", "")
         violation.v_regno_country_id = data.get('plate_code')
-        violation.v_ts_model = f"({data.get('mark')}/{data.get('model')})"
 
-    def _parse_coordinate(self, coord_str: str) -> float:
-        """Парсит координату из строки"""
-        if not coord_str:
-            return 0.0
+        mark = data.get('mark', '')
+        model = data.get('model', '')
+        violation.v_ts_model = f"({mark}/{model})" if mark or model else None
+
+    def _parse_float(self, value: Any) -> float:
+        """Парсинг float значений"""
         try:
-            clean_str = re.sub(r"[^\d.-]", "", coord_str)
-            return float(clean_str)
+            if isinstance(value, str):
+                value = re.sub(r"[^\d.-]", "", value)
+            return float(value) if value else self.default_coord
         except (ValueError, TypeError):
-            return 0.0
+            return self.default_coord
 
-    def _parse_timestamp(self, data: Dict[str, Any]) -> str:
-        """Парсит и форматирует временную метку"""
-        utc_timestamp = data.get('UTC')
-        if not utc_timestamp:
-            return datetime.now().isoformat(timespec='milliseconds')
+    def _parse_int(self, value: Any, default: int = None) -> Optional[int]:
+        """Парсинг int значений"""
+        try:
+            return int(value) if value is not None else default
+        except (ValueError, TypeError):
+            return default
 
-        dt = datetime.utcfromtimestamp(utc_timestamp)
-        milliseconds = data.get('ms', 0)
-        timezone_offset = data.get('timezone', 0) * 360
+    def _parse_datetime(self, data: Dict) -> str:
+        """Парсинг временных меток"""
+        try:
+            timestamp = data.get('UTC')
+            if not timestamp:
+                return self.default_date.isoformat(timespec='milliseconds')
 
-        dt += timedelta(
-            milliseconds=milliseconds,
-            hours=timezone_offset // 3600
-        )
+            dt = datetime.utcfromtimestamp(timestamp)
+            ms = self._parse_int(data.get('ms'), 0)
+            tz_offset = self._parse_int(data.get('timezone'), 0) * 360
 
-        return dt.isoformat(timespec='milliseconds')
+            dt += timedelta(
+                milliseconds=ms,
+                hours=tz_offset // 3600
+            )
+            return dt.isoformat(timespec='milliseconds')
+        except Exception:
+            return self.default_date.isoformat(timespec='milliseconds')

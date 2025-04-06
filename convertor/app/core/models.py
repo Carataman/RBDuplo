@@ -20,10 +20,11 @@ class ViolationData:
     v_car_type: Optional[str] = None
     v_ts_model: Optional[str] = None
     v_patrol_speed: int = 56
-    v_photo_ts: str = ""
-    v_photo_extra: List[str] = None
     v_pr_viol: List[str] = None
     violation: Optional[str] = None
+    v_photo_ts: str = ""
+    v_photo_extra: List[str] = None
+
 
     def __post_init__(self):
         """Инициализация списков после создания объекта"""
