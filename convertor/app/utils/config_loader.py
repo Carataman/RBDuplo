@@ -25,11 +25,12 @@ def load_config() -> Dict[str, Any]:
         logger.critical(f"Ошибка загрузки connection.json: {e}")
         raise
 
-    # 2. Загрузка configuration.json (опциональный)
+    # 2. Загрузка configuration.json
     conf_path = conf_dir / "configuration.json"
     try:
         with open(conf_path, 'r', encoding='utf-8') as f:
             configuration = json.load(f)
+
 
             # Правильное объединение вложенных структур
             for key, value in configuration.items():
@@ -42,6 +43,7 @@ def load_config() -> Dict[str, Any]:
                     config[key] = value
 
         logger.info(f"Успешно загружен {conf_path}")
+
     except FileNotFoundError:
         logger.warning("Файл configuration.json не найден, используются значения по умолчанию")
     except Exception as e:
@@ -51,7 +53,7 @@ def load_config() -> Dict[str, Any]:
     config.setdefault('processing', {}).setdefault('start_date', '1970-01-01 00:00:00')
 
     # Валидация обязательных параметров
-    required_sections = ['database']
+    required_sections = ['database', ]
     for section in required_sections:
         if section not in config:
             raise ValueError(f"Отсутствует обязательная секция '{section}' в конфигурации")

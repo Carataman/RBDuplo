@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 
 class DatabaseConnect:
-    def __init__(self, config: Dict):
+    def __init__(self, config: Dict, start_date: str = None):
         """
         Args:
             config: Должен содержать ключи:
@@ -18,7 +18,8 @@ class DatabaseConnect:
 
         self.config = config
         self.connection = self._connect()
-
+        self.start_date = start_date
+        logger.info(start_date)
     def _connect(self):
         """Подключение к PostgreSQL с проверкой параметров"""
         required_keys = {'dbname', 'user', 'password', 'host', 'port'}
@@ -36,16 +37,18 @@ class DatabaseConnect:
             raise
 
     def get_new_violations(self) -> List[Dict]:
+
         """Получает данные из БД с учётом start_date из конфига"""
         if not self.connection:
             logger.error("Нет подключения к БД")
             return []
 
         try:
-            # Правильное получение start_date из вложенной структуры
-            start_date = self.config.get('processing', {}).get('start_date', '1970-01-01 00:00:00')
 
-            logger.info(f"Используется start_date: {start_date}")
+            # Правильное получение start_date из вложенной структуры
+
+
+            logger.info(f"Используется start_date: {self.start_date}")
 
             with self.connection.cursor(cursor_factory=DictCursor) as cursor:
                 cursor.execute("""
@@ -54,7 +57,7 @@ class DatabaseConnect:
                     WHERE timestamp >= %s 
                     ORDER BY timestamp ASC 
                     LIMIT 1;
-                """, (start_date,))
+                """, (self.start_date,))
 
                 result = cursor.fetchall()
                 logger.info(f"Найдено нарушений: {len(result)}")

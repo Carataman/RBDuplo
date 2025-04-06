@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime
+from distutils.command.config import config
 from typing import Dict, Any
 from convertor.app.core.database import DatabaseConnect
 from convertor.app.core.ftp_client import FTPClient
@@ -9,29 +10,32 @@ logger = logging.getLogger(__name__)
 
 
 class DataProcessingService:
-    def __init__(self, config: dict):  # Принимаем config как параметр
-        self.config = config  # Сохраняем конфиг в объекте
-        self._initialize_components()
+    def __init__(self, config: dict):
+        self.config = config
+        self.start_date = config['processing']['start_date']  # Сохраняем дату отдельно
 
-    def _initialize_components(self):
-        """Инициализация компонентов с проверкой конфигов"""
-        self.db = DatabaseConnect(self.config['database'])
+        # Проверка конфигурации
         required_configs = {
             'database': "Не найдена конфигурация базы данных",
             'ftp': "Не найдена конфигурация FTP",
-            'api': "Не найдена конфигурация API"
+            'api': "Не найдена конфигурация API",
+            'processing': "Не найдена конфигурация обработки"
         }
 
-        # Проверяем наличие всех необходимых секций
         for key, error_msg in required_configs.items():
             if key not in self.config:
                 raise ValueError(error_msg)
 
-        # Инициализация компонентов
-        self.db = DatabaseConnect(self.config['database'])
+        # Инициализация компонентов (единственный вызов)
+        self.db = DatabaseConnect(
+            config=self.config['database'],
+            start_date=self.start_date  # Передаём дату
+        )
         self.ftp = FTPClient(self.config['ftp'])
         self.api = SendToServer(self.config['api'])
         self.parser = JpegParser(self.config.get('parsing', {}))
+
+
 
 
 
@@ -41,6 +45,7 @@ class DataProcessingService:
             # 1. Получаем новые нарушения из БД
             violations = self.db.get_new_violations()
             logger.info(f"Found {len(violations)} new violations")
+
 
             for violation in violations:
                 try:

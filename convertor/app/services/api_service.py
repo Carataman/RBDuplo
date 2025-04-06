@@ -1,6 +1,9 @@
 from typing import Dict, Any
 import requests
 import logging
+
+from requests import RequestException
+
 # Настройка логирования
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
