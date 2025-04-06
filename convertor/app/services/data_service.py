@@ -92,12 +92,28 @@ class DataProcessingService:
             self.db.mark_as_processed(violation['id'])
 
     def _prepare_enriched_data(self, db_data: dict, parsed_data: dict) -> dict:
-        """Подготовка обогащенных данных с гарантированной сериализацией"""
+        """Собираем только нужные поля"""
         return {
-            **db_data,
-            **parsed_data,
-            'processing_time': datetime.now().isoformat(),  # Уже строка
-            'violation_id': str(db_data.get('id', 'unknown'))
+            # Из данных из БД
+            "v_camera": db_data.get("camera_name"),
+            "v_camera_serial": db_data.get("camera_serial"),
+            "v_camera_place": db_data.get("installation_place"),
+
+            # Из распарсенных данных
+            "v_direction": parsed_data.get("direction"),
+            "v_direction_name": parsed_data.get("direction_name"),
+            "v_azimut": parsed_data.get("azimut"),
+            "v_gps_x": parsed_data.get("gps_x"),
+            "v_gps_y": parsed_data.get("gps_y"),
+            "v_pr_viol": parsed_data.get("violation_type"),
+            "v_regno_country_id": parsed_data.get("country_code"),
+            "v_speed": parsed_data.get("speed"),
+            "v_speed_limit": parsed_data.get("speed_limit"),
+            "v_patrol_speed": parsed_data.get("patrol_speed"),
+            "v_time_check": parsed_data.get("timestamp"),
+            "v_ts_model": parsed_data.get("vehicle_model"),
+            "v_ts_type": parsed_data.get("vehicle_type"),
+            "v_photo_ts": parsed_data.get("photo_base64")
         }
 
     def _validate_violation(self, data: dict) -> bool:
@@ -114,7 +130,7 @@ class DataProcessingService:
         enriched = {
             **db_data,
             **parsed_data,
-            'processing_time': datetime.datetime.now().isoformat(),
+            'processing_time': datetime.now().isoformat(),
             'violation_id': str(db_data.get('id', 'unknown'))
         }
         return self._ensure_serializable(enriched)

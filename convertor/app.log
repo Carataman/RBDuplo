@@ -11,3 +11,63 @@ Traceback (most recent call last):
     self.db = DatabaseConnect(
               ^^^^^^^^^^^^^^^
 NameError: name 'DatabaseConnect' is not defined
+2025-04-06 21:20:15,211 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\connection.json
+2025-04-06 21:20:15,212 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\configuration.json
+2025-04-06 21:20:15,330 - convertor.app.core.database - INFO - Успешное подключение к PostgreSQL
+2025-04-06 21:20:15,330 - convertor.app.core.database - INFO - 2025-02-1 12:00:00
+2025-04-06 21:20:15,330 - convertor.app.core.database - INFO - Используется start_date: 2025-02-1 12:00:00
+2025-04-06 21:20:15,355 - convertor.app.core.database - INFO - Найдено нарушений: 1
+2025-04-06 21:20:15,355 - convertor.app.services.data_service - INFO - Found 1 new violations
+2025-04-06 21:20:15,420 - convertor.app.core.ftp_client - INFO - FTP подключение установлено
+2025-04-06 21:20:15,770 - convertor.app.core.ftp_client - INFO - Загружен файл 2309033_2025_02_11_10_07_38_13_04_00.jpg (121840 байт)
+2025-04-06 21:20:15,839 - convertor.app.services.api_service - ERROR - Server error 400: Bad Request
+Status: 400
+Headers: {'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Date': 'Sun, 06 Apr 2025 18:20:15 GMT', 'Connection': 'close'}
+Body: {
+  "timestamp": "2025-04-06T18:20:15.865+00:00",
+  "status": 400,
+  "error": "Bad Request",
+  "path": "/send"
+}
+2025-04-06 21:20:15,840 - convertor.app.core.database - INFO - Соединение с PostgreSQL закрыто
+2025-04-06 21:20:15,852 - convertor.app.core.ftp_client - INFO - FTP соединение закрыто
+2025-04-06 21:26:46,710 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\connection.json
+2025-04-06 21:26:46,711 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\configuration.json
+2025-04-06 21:26:46,832 - convertor.app.core.database - INFO - Успешное подключение к PostgreSQL
+2025-04-06 21:26:46,832 - convertor.app.core.database - INFO - 2025-02-1 12:00:00
+2025-04-06 21:26:46,833 - convertor.app.core.database - INFO - Используется start_date: 2025-02-1 12:00:00
+2025-04-06 21:26:46,869 - convertor.app.core.database - INFO - Найдено нарушений: 1
+2025-04-06 21:26:46,869 - convertor.app.services.data_service - INFO - Found 1 new violations
+2025-04-06 21:26:46,951 - convertor.app.core.ftp_client - INFO - FTP подключение установлено
+2025-04-06 21:26:47,263 - convertor.app.core.ftp_client - INFO - Загружен файл 2309033_2025_02_11_10_07_38_13_04_00.jpg (121840 байт)
+2025-04-06 21:26:47,498 - convertor.app.services.api_service - ERROR - Server error 400: Bad Request
+Status: 400
+Headers: {'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Date': 'Sun, 06 Apr 2025 18:26:47 GMT', 'Connection': 'close'}
+Body: {
+  "timestamp": "2025-04-06T18:26:47.508+00:00",
+  "status": 400,
+  "error": "Bad Request",
+  "path": "/send"
+}
+2025-04-06 21:26:47,498 - convertor.app.core.database - INFO - Соединение с PostgreSQL закрыто
+2025-04-06 21:26:47,512 - convertor.app.core.ftp_client - INFO - FTP соединение закрыто
+2025-04-06 21:27:45,177 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\connection.json
+2025-04-06 21:27:45,177 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\configuration.json
+2025-04-06 21:27:45,315 - convertor.app.core.database - INFO - Успешное подключение к PostgreSQL
+2025-04-06 21:27:45,315 - convertor.app.core.database - INFO - 2025-02-1 12:00:00
+2025-04-06 21:27:45,315 - convertor.app.core.database - INFO - Используется start_date: 2025-02-1 12:00:00
+2025-04-06 21:27:45,354 - convertor.app.core.database - INFO - Найдено нарушений: 1
+2025-04-06 21:27:45,354 - convertor.app.services.data_service - INFO - Found 1 new violations
+2025-04-06 21:27:45,661 - convertor.app.core.ftp_client - INFO - FTP подключение установлено
+2025-04-06 21:27:46,228 - convertor.app.core.ftp_client - INFO - Загружен файл 2309033_2025_02_11_10_07_38_13_04_00.jpg (121840 байт)
+2025-04-06 21:27:46,870 - convertor.app.services.api_service - ERROR - Server error 400: Bad Request
+Status: 400
+Headers: {'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Date': 'Sun, 06 Apr 2025 18:27:46 GMT', 'Connection': 'close'}
+Body: {
+  "timestamp": "2025-04-06T18:27:46.801+00:00",
+  "status": 400,
+  "error": "Bad Request",
+  "path": "/send"
+}
+2025-04-06 21:27:46,870 - convertor.app.core.database - INFO - Соединение с PostgreSQL закрыто
+2025-04-06 21:27:46,890 - convertor.app.core.ftp_client - INFO - FTP соединение закрыто
