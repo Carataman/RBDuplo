@@ -57,7 +57,7 @@ class SendToServer:
 
             response = self.session.post(
                 url=url,
-                data=data if files else None,
+                #data=data if files else None,
                 json=data if not files else None,
                 files=files,
                 headers=headers,
