@@ -3,6 +3,8 @@ from typing import Optional, List
 
 @dataclass
 class ViolationData:
+
+
     """Класс для хранения данных о нарушении"""
     v_azimut: float = 0.0
     v_camera: Optional[str] = None

@@ -1,0 +1,100 @@
+{
+    "v_camera": {
+        "default": null,
+        "type": [
+            "string",
+            "null"
+        ]},
+    "v_camera_serial": {
+        "default": null,
+        "type": [
+            "string",
+            "null"
+        ]},
+    "v_camera_place": {
+        "default": null,
+        "type": [
+            "string",
+            "null"
+        ]},
+    "v_direction": {
+        "default": null,
+        "type": [
+            "string",
+            "null"
+        ]},
+    "v_direction_name": {
+        "default": null,
+        "type": [
+            "string",
+            "null"
+        ]},
+    "v_azimut": {
+        "default": 0.0,
+        "type": "number"
+    },
+    "v_gps_x": {
+        "default": 0.0,
+        "type": "number"
+    },
+    "v_gps_y": {
+        "default": 0.0,
+        "type": "number"
+    },
+    "v_pr_viol":  {
+        "items": {
+            "type": "string"
+        },
+        "type": [
+            "array",
+            "null"
+        ]
+    },
+    "v_regno": {
+        "default": null,
+        "type": [
+            "string",
+            "null"
+        ]},
+    "v_regno_country_id": {
+        "default": null,
+        "type": [
+            "string",
+            "null"
+        ]},
+    "v_speed": {
+        "default": 0.0,
+        "type": "number"
+    },
+    "v_speed_limit": {
+        "default": 0.0,
+        "type": "number"
+    },
+    "v_patrol_speed": {
+        "default": 0.0,
+        "type": "number"
+    },
+    "v_time_check": "",
+    "v_ts_model": {
+        "default": null,
+        "type": [
+            "string",
+            "null"
+        ]},
+    "v_ts_type": {
+        "default": null,
+        "type": [
+            "string",
+            "null"
+        ]},
+    "v_photo_ts": "",
+    "v_photo_extra":  {
+        "items": {
+            "type": "string"
+        },
+        "type": [
+            "array",
+            "null"
+        ]
+    }
+}

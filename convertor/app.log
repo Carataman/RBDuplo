@@ -1,0 +1,13 @@
+2025-04-06 20:26:08,787 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\connection.json
+2025-04-06 20:26:08,787 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\configuration.json
+2025-04-06 20:26:08,788 - root - CRITICAL - Application failed: name 'DatabaseConnect' is not defined
+Traceback (most recent call last):
+  File "C:\python_projects\ConvertertBSDUplo\convertor\main.py", line 20, in main
+    service = DataProcessingService(config)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\python_projects\ConvertertBSDUplo\convertor\app\services\data_service.py", line 14, in __init__
+    self._init_components()
+  File "C:\python_projects\ConvertertBSDUplo\convertor\app\services\data_service.py", line 34, in _init_components
+    self.db = DatabaseConnect(
+              ^^^^^^^^^^^^^^^
+NameError: name 'DatabaseConnect' is not defined

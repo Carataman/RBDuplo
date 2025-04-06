@@ -3,13 +3,15 @@ import json
 import logging
 import re
 from datetime import datetime, timedelta
-
-from typing import List, Optional, Dict, Any, Union
-
-from convertor.app.core.models import ViolationData
-
+from pathlib import Path
+from typing import Dict, List, Optional, Any
 
 logger = logging.getLogger(__name__)
+
+
+class ParserError(Exception):
+    """Кастомное исключение для ошибок парсинга"""
+    pass
 
 
 class JpegParser:
@@ -22,26 +24,47 @@ class JpegParser:
         """Инициализация парсера с конфигурацией"""
         self.config = config or {}
         self._setup_defaults()
+        self._load_field_config()
 
     def _setup_defaults(self):
         """Установка значений по умолчанию"""
         self.default_coord = 0.0
         self.default_speed = 0
-        self.default_date = datetime(1970, 1, 1)
+        self.default_date_str = datetime(1970, 1, 1).isoformat()
 
-    def parse(self, jpeg_data: bytes) -> Optional[ViolationData]:
+    def _load_field_config(self):
+        """Загрузка конфигурации полей"""
+        try:
+            if 'field_config' in self.config:
+                self.field_config = self.config['field_config'].get('violation_fields', {})
+            else:
+                config_path = Path('convertor/conf/field_config.json')
+                with open(config_path) as f:
+                    self.field_config = json.load(f).get('violation_fields', {})
+        except Exception as e:
+            logger.error(f"Failed to load field config: {e}")
+            self.field_config = {
+                'required': ['v_regno', 'v_time_check', 'v_photo_ts'],
+                'optional': {},
+                'field_mapping': {}
+            }
+
+    def parse(self, jpeg_data: bytes) -> Optional[Dict]:
         """Основной метод парсинга"""
         try:
             self._validate_input(jpeg_data)
-
             jpeg_frames = self._extract_frames(jpeg_data)
             json_data = self._extract_json(jpeg_data)
             parsed_data = self._parse_json(json_data)
 
-            return self._build_violation(jpeg_frames, parsed_data)
+            violation_data = self._build_violation(jpeg_frames, parsed_data)
+            return self._ensure_serializable(violation_data)
 
+        except ParserError as e:
+            logger.error(f"Parser validation error: {e}")
+            return None
         except Exception as e:
-            logger.error(f"Parser error: {e}", exc_info=True)
+            logger.error(f"Unexpected parser error: {e}", exc_info=True)
             return None
 
     def _validate_input(self, data: bytes):
@@ -58,10 +81,12 @@ class JpegParser:
 
         while pos < len(data):
             start_pos = data.find(self.JPEG_MARKERS[0], pos)
-            if start_pos == -1: break
+            if start_pos == -1:
+                break
 
             end_pos = data.find(self.JPEG_MARKERS[1], start_pos)
-            if end_pos == -1: break
+            if end_pos == -1:
+                break
 
             frame = data[start_pos:end_pos + 2]
             frames.append(base64.b64encode(frame).decode('utf-8'))
@@ -112,102 +137,153 @@ class JpegParser:
                         logger.warning("Invalid JSON fragment")
         return result
 
-    def _build_violation(self, frames: List[str], data: List[Dict]) -> ViolationData:
-        """Создание объекта нарушения"""
+    def _build_violation(self, frames: List[str], data: List[Dict]) -> Dict:
+        """Создание объекта нарушения с защитой от всех ошибок формата"""
+        violation = {}
         if not frames or not data:
-            raise ParserError("Insufficient data to build violation")
+            return violation
 
-        violation = ViolationData()
-        last_data = data[-1]
+        try:
+            last_data = data[-1]
 
-        # Обработка изображений
-        violation.v_photo_ts = frames[0]
-        violation.v_photo_extra = frames[1:] if len(frames) > 1 else []
+            # Обработка изображений
+            violation['v_photo_ts'] = frames[0]
+            if len(frames) > 1:
+                violation['v_photo_extra'] = frames[1:]
 
-        # Заполнение данных
-        self._fill_from_sections(
-            violation,
-            last_data.get('device_info', {}),
-            last_data.get('installation_place_info', {}),
-            last_data.get('violation_info', {}),
-            last_data.get('recogniser_info', {})
-        )
+            # Обработка временной метки
+            violation_info = last_data.get('violation_info', {})
+            violation['v_time_check'] = self._parse_timestamp(violation_info)
 
-        return violation
+            # Обработка координат GPS с защитой от некорректных значений
+            if 'installation_place_info' in last_data:
+                place_data = last_data['installation_place_info']
+                violation['v_gps_x'] = self._parse_coordinate(place_data.get('latitude'))
+                violation['v_gps_y'] = self._parse_coordinate(place_data.get('longitude'))
 
-    def _fill_from_sections(self, violation: ViolationData,
-                            device: Dict, place: Dict,
-                            violation_info: Dict, recogniser: Dict):
-        """Заполнение данных из всех секций"""
-        self._fill_device(violation, device)
-        self._fill_place(violation, place)
-        self._fill_violation(violation, violation_info)
-        self._fill_recogniser(violation, recogniser)
+            # Обработка данных распознавания
+            if 'recogniser_info' in last_data:
+                recognizer_data = last_data['recogniser_info']
+                violation.update(self._parse_recognizer_data(recognizer_data))
 
-    def _fill_device(self, violation: ViolationData, data: Dict):
-        """Данные устройства"""
-        violation.v_camera = data.get('name_speed_meter')
-        violation.v_camera_serial = data.get('factory_number')
+            # Остальные поля
+            if 'device_info' in last_data:
+                device_data = last_data['device_info']
+                violation.update({
+                    'v_camera': device_data.get('name_speed_meter'),
+                    'v_camera_serial': device_data.get('factory_number')
+                })
 
-    def _fill_place(self, violation: ViolationData, data: Dict):
-        """Данные места"""
-        violation.v_camera_place = data.get('place', '')
-        violation.v_direction = "Попутное" if data.get('direction') == 0 else "Встречное"
-        violation.v_direction_name = data.get('place_outcoming', '')
-        violation.v_gps_x = self._parse_float(data.get("latitude"))
-        violation.v_gps_y = self._parse_float(data.get("longitude"))
+            return violation
+        except Exception as e:
+            logger.error(f"Error building violation: {e}")
+            return {}
 
-    def _fill_violation(self, violation: ViolationData, data: Dict):
-        """Данные нарушения"""
-        violation.v_time_check = self._parse_datetime(data)
-        violation.v_speed = self._parse_int(data.get('speed'))
-        violation.v_speed_limit = self._parse_int(data.get('speed_threshold'))
-        violation.v_car_type = data.get('type')
-        violation.v_patrol_speed = self._parse_int(data.get('self_speed'), 0)
+    def _parse_timestamp(self, data: Dict) -> str:
+        """Парсинг временной метки с защитой от ошибок"""
+        try:
+            utc_timestamp = data.get('UTC')
+            if not utc_timestamp:
+                return datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3]
 
-        if reason := data.get('crime_reason'):
-            violation.v_pr_viol = [reason]
+            dt = datetime.utcfromtimestamp(float(utc_timestamp))
+            milliseconds = int(data.get('ms', 0))
+            timezone_offset = int(data.get('timezone', 0)) * 360
+            dt += timedelta(
+                milliseconds=milliseconds,
+                hours=timezone_offset // 3600
+            )
+            return dt.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3]
+        except Exception as e:
+            logger.error(f"Timestamp parsing error: {e}")
+            return datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3]
 
-    def _fill_recogniser(self, violation: ViolationData, data: Dict):
-        """Данные распознавания"""
-        violation.v_regno = (data.get('plate_chars') or '').replace("|", "")
-        violation.v_regno_country_id = data.get('plate_code')
+    def _ensure_serializable(self, data: Dict) -> Dict:
+        """Гарантирует, что все данные сериализуемы в JSON"""
 
+        def convert(obj):
+            if isinstance(obj, (datetime, date, time)):
+                return obj.isoformat()
+            elif isinstance(obj, (float, int, str, bool)) or obj is None:
+                return obj
+            elif isinstance(obj, dict):
+                return {k: convert(v) for k, v in obj.items()}
+            elif isinstance(obj, (list, tuple)):
+                return [convert(item) for item in obj]
+            else:
+                return str(obj)
+
+        try:
+            # Двойная конвертация для проверки
+            json_str = json.dumps(data, default=convert)
+            return json.loads(json_str)
+        except Exception as e:
+            logger.error(f"Serialization error: {e}")
+            return {}
+
+    def _parse_coordinate(self, coord: Any) -> float:
+        """Парсинг координат с обработкой специальных форматов"""
+        if coord is None:
+            return 0.0
+
+        try:
+            if isinstance(coord, str):
+                # Обработка формата типа 'N0.000000'
+                coord = re.sub(r'[^0-9.-]', '', coord)
+                if not coord:  # Если после очистки строка пустая
+                    return 0.0
+            return float(coord)
+        except (ValueError, TypeError):
+            return 0.0
+
+    def _parse_recognizer_data(self, data: Dict) -> Dict:
+        """Обработка данных распознавания"""
+        result = {
+            'v_regno': data.get('plate_chars', '').replace("|", ""),
+            'v_regno_country_id': data.get('plate_code')
+        }
+
+        # Обработка модели ТС
         mark = data.get('mark', '')
         model = data.get('model', '')
-        violation.v_ts_model = f"({mark}/{model})" if mark or model else None
+        if mark or model:
+            result['v_ts_model'] = f"({mark}/{model})"
 
-    def _parse_float(self, value: Any) -> float:
-        """Парсинг float значений"""
+        return result
+
+    def _ensure_serializable(self, data: Dict) -> Dict:
+        """Гарантированная сериализация с обработкой datetime"""
         try:
-            if isinstance(value, str):
-                value = re.sub(r"[^\d.-]", "", value)
-            return float(value) if value else self.default_coord
-        except (ValueError, TypeError):
-            return self.default_coord
+            # Преобразуем все datetime в строки
+            serialized = json.dumps(data, default=self._json_serializer)
+            return json.loads(serialized)
+        except Exception as e:
+            logger.error(f"Serialization error: {e}")
+            return {}
 
-    def _parse_int(self, value: Any, default: int = None) -> Optional[int]:
+    @staticmethod
+    def _json_serializer(obj: Any) -> Any:
+        """Универсальный сериализатор"""
+        if isinstance(obj, datetime):
+            return obj.isoformat()
+        try:
+            return str(obj)
+        except Exception:
+            return None
+    @staticmethod
+    def _parse_int(value: Any, default: int = None) -> Optional[int]:
         """Парсинг int значений"""
         try:
             return int(value) if value is not None else default
         except (ValueError, TypeError):
             return default
 
-    def _parse_datetime(self, data: Dict) -> str:
-        """Парсинг временных меток"""
+    @staticmethod
+    def _parse_float(value: Any) -> float:
+        """Парсинг float значений"""
         try:
-            timestamp = data.get('UTC')
-            if not timestamp:
-                return self.default_date.isoformat(timespec='milliseconds')
-
-            dt = datetime.utcfromtimestamp(timestamp)
-            ms = self._parse_int(data.get('ms'), 0)
-            tz_offset = self._parse_int(data.get('timezone'), 0) * 360
-
-            dt += timedelta(
-                milliseconds=ms,
-                hours=tz_offset // 3600
-            )
-            return dt.isoformat(timespec='milliseconds')
-        except Exception:
-            return self.default_date.isoformat(timespec='milliseconds')
+            if isinstance(value, str):
+                value = re.sub(r"[^\d.-]", "", value)
+            return float(value) if value else 0.0
+        except (ValueError, TypeError):
+            return 0.0

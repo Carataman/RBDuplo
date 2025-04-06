@@ -10,14 +10,6 @@ logger = logging.getLogger(__name__)
 
 class SendToServer:
     def __init__(self, config: Dict):
-        """Инициализация клиента для отправки данных на сервер
-
-        Args:
-            config: Должен содержать:
-                   - api_url: Базовый URL API
-                   - timeout: Таймаут соединения (опционально)
-                   - endpoint: Конечная точка API (опционально)
-        """
         required_keys = ['api_url']
         missing = [k for k in required_keys if k not in config]
 
@@ -27,9 +19,12 @@ class SendToServer:
         self.base_url = config['api_url'].rstrip('/')
         self.timeout = config.get('timeout', 30)
         self.endpoint = config.get('endpoint', '/api/violations')
+        self.session = requests.Session()
         self.headers = {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
+
+
         }
 
     def check_connection(self) -> bool:
@@ -45,25 +40,58 @@ class SendToServer:
             logger.error(f"Ошибка подключения к серверу: {str(e)}")
             return False
 
-    def send_violation(self, data: Dict[str, Any]) -> bool:
-        """Отправка данных о нарушении на сервер"""
+    def send_violation(self, json_data: str) -> bool:
+        """Отправка уже сериализованного JSON"""
         try:
-            full_url = f"{self.base_url}{self.endpoint}"
-
             response = requests.post(
-                full_url,
-                json=data,
-                headers=self.headers,
+                self.endpoint,
+                data=json_data,
+                headers={'Content-Type': 'application/json'},
                 timeout=self.timeout
             )
-
-            if response.ok:
-                logger.info(f"Данные успешно отправлены. Ответ сервера: {response.text}")
-                return True
-            else:
-                logger.error(f"Ошибка сервера. Статус: {response.status_code}, Ответ: {response.text}")
-                return False
-
-        except RequestException as e:
-            logger.error(f"Ошибка при отправке данных: {str(e)}")
+            response.raise_for_status()
+            return True
+        except Exception as e:
+            logger.error(f"API request failed: {e}")
             return False
+    # def send_violation(self, data: dict) -> bool:
+    #     """Отправка данных на сервер"""
+    #     try:
+    #         # Проверка минимально необходимых полей
+    #         required_fields = ['id', 'timestamp']  # Пример базовых требований
+    #         for field in required_fields:
+    #             if field not in data:
+    #                 raise ValueError(f"Отсутствует обязательное поле: {field}")
+    #
+    #         response = self.session.post(
+    #             f"{self.base_url}{self.endpoint}",
+    #             json=data,  # Отправляем как есть
+    #             headers=self.headers,
+    #             timeout=self.timeout
+    #         )
+    #
+    #         # 5. Обработка специфичных кодов ответа
+    #         if response.status_code == 200:
+    #             logger.info(f"Успешная отправка. Ответ: {response.text}")
+    #             return True
+    #         elif response.status_code == 400:
+    #             logger.error(f"Ошибка 400: Некорректный запрос. Подробности: {response.text}")
+    #
+    #
+    #
+    #         elif 500 <= response.status_code < 600:
+    #             logger.error(f"Ошибка {response.status_code}: Проблема на сервере")
+    #         else:
+    #             logger.error(f"Неизвестная ошибка. Статус: {response.status_code}, Ответ: {response.text}")
+    #
+    #         return False
+    #
+    #     except requests.exceptions.Timeout:
+    #         logger.error("Таймаут при подключении к серверу")
+    #         return False
+    #     except requests.exceptions.TooManyRedirects:
+    #         logger.error("Слишком много редиректов")
+    #         return False
+    #     except requests.exceptions.RequestException as e:
+    #         logger.error(f"Критическая ошибка при отправке: {str(e)}", exc_info=True)
+    #         return False

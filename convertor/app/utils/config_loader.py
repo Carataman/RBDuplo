@@ -60,3 +60,23 @@ def load_config() -> Dict[str, Any]:
 
     logger.debug(f"Полная загруженная конфигурация:\n{json.dumps(config, indent=2)}")
     return config
+
+
+def load_field_config() -> Dict[str, Any]:
+    """Загрузка и объединение конфигурационных файлов"""
+    config = {}
+    base_dir = Path(__file__).parent.parent.parent
+    conf_dir = base_dir  / "conf"
+
+    if not conf_dir.exists():
+        raise FileNotFoundError(f"Директория с конфигами не найдена: {conf_dir}")
+
+    # 1. Загрузка field_config.json (обязательный)
+    conn_path = conf_dir / "field_config.json"
+    try:
+        with open(conn_path, 'r', encoding='utf-8') as f:
+            config.update(json.load(f))
+        logger.info(f"Успешно загружен {conn_path}")
+    except Exception as e:
+        logger.critical(f"Ошибка загрузки field_config.json: {e}")
+        raise
