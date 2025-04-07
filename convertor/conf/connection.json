@@ -3,12 +3,12 @@
     "dbname":  "mary",
   "user":  "prometheus",
   "password":  "prometheus",
-  "host":  "10.10.100.52",
+  "host":  "10.10.12.15",
   "port" : "5432"
 
   },
   "ftp": {
-    "ftp_host":"10.10.100.52",
+    "ftp_host": "10.10.12.15",
     "ftp_user":"ftp3",
     "ftp_pass": "ftp3"
   }

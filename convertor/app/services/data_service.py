@@ -122,13 +122,17 @@ class DataProcessingService:
             return False
         return True
 
-    def _enrich_data(self, db_data: dict, parsed_data: dict) -> dict:
-        """Обогащение данных с гарантированной сериализацией"""
-        enriched = {
+    def _enrich_data(self, parsed_data: dict) -> dict:
+        """Обогащение данных с проверкой обязательных полей"""
+        required_fields = self.field_config.get('required', [])
+        enriched = {}
 
-            **parsed_data,
+        for field in required_fields:
+            value = parsed_data.get(field)
+            if value is None:
+                logger.warning(f"Поле {field} отсутствует в parsed_data")
+            enriched[field] = value
 
-        }
         return self._ensure_serializable(enriched)
 
     def _ensure_serializable(self, data: dict) -> dict:
@@ -169,7 +173,8 @@ class DataProcessingService:
                     # Дополнительная проверка перед отправкой
                     if self._validate_data(enriched_data):
                         serialized_data = json.dumps(enriched_data, default=json_serializer)
-                        self.api.send_violation(serialized_data)
+                        #self.api.send_violation(serialized_data)
+                        self.api.send_violation(enriched_data)
                         #self.db.mark_as_processed(violation['id'])
 
                 except Exception as e:

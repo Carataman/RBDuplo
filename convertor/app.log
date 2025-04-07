@@ -195,3 +195,320 @@ Body: {
 }
 2025-04-06 21:57:03,515 - convertor.app.core.database - INFO - Соединение с PostgreSQL закрыто
 2025-04-06 21:57:03,529 - convertor.app.core.ftp_client - INFO - FTP соединение закрыто
+2025-04-07 17:27:59,333 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\connection.json
+2025-04-07 17:27:59,346 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\configuration.json
+2025-04-07 17:27:59,786 - convertor.app.core.database - INFO - Успешное подключение к PostgreSQL
+2025-04-07 17:27:59,786 - convertor.app.core.database - INFO - 2025-02-1 12:00:00
+2025-04-07 17:27:59,786 - convertor.app.core.database - INFO - Используется start_date: 2025-02-1 12:00:00
+2025-04-07 17:27:59,938 - convertor.app.core.database - INFO - Найдено нарушений: 1
+2025-04-07 17:27:59,938 - convertor.app.services.data_service - INFO - Found 1 new violations
+2025-04-07 17:28:00,391 - convertor.app.core.ftp_client - INFO - FTP подключение установлено
+2025-04-07 17:28:01,532 - convertor.app.core.ftp_client - INFO - Загружен файл 2309033_2025_02_11_10_07_38_13_04_00.jpg (121840 байт)
+2025-04-07 17:28:02,340 - convertor.app.services.api_service - ERROR - Server error 400: Bad Request
+Status: 400
+Headers: {'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Date': 'Mon, 07 Apr 2025 14:28:02 GMT', 'Connection': 'close'}
+Body: {
+  "timestamp": "2025-04-07T14:28:02.170+00:00",
+  "status": 400,
+  "error": "Bad Request",
+  "path": "/send"
+}
+2025-04-07 17:28:02,340 - convertor.app.core.database - INFO - Соединение с PostgreSQL закрыто
+2025-04-07 17:28:02,393 - convertor.app.core.ftp_client - INFO - FTP соединение закрыто
+2025-04-07 18:59:00,673 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\connection.json
+2025-04-07 18:59:00,681 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\configuration.json
+2025-04-07 18:59:01,143 - convertor.app.core.database - INFO - Успешное подключение к PostgreSQL
+2025-04-07 18:59:01,143 - convertor.app.core.database - INFO - 2025-02-1 12:00:00
+2025-04-07 18:59:01,143 - convertor.app.core.database - INFO - Используется start_date: 2025-02-1 12:00:00
+2025-04-07 18:59:01,295 - convertor.app.core.database - INFO - Найдено нарушений: 1
+2025-04-07 18:59:01,295 - convertor.app.services.data_service - INFO - Found 1 new violations
+2025-04-07 18:59:01,690 - convertor.app.core.ftp_client - INFO - FTP подключение установлено
+2025-04-07 18:59:03,116 - convertor.app.core.ftp_client - INFO - Загружен файл 2309033_2025_02_11_10_07_38_13_04_00.jpg (121840 байт)
+2025-04-07 18:59:03,775 - convertor.app.services.api_service - INFO - Successfully sent
+Status: 200
+Headers: {'Content-Length': '0', 'Date': 'Mon, 07 Apr 2025 15:59:03 GMT', 'Keep-Alive': 'timeout=60', 'Connection': 'keep-alive'}
+Body: {
+  "raw_response": ""
+}
+2025-04-07 18:59:03,775 - convertor.app.core.database - INFO - Соединение с PostgreSQL закрыто
+2025-04-07 18:59:03,892 - convertor.app.core.ftp_client - INFO - FTP соединение закрыто
+2025-04-07 19:00:02,484 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\connection.json
+2025-04-07 19:00:02,485 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\configuration.json
+2025-04-07 19:00:02,834 - convertor.app.core.database - INFO - Успешное подключение к PostgreSQL
+2025-04-07 19:00:02,835 - convertor.app.core.database - INFO - 2025-02-01 12:00:00
+2025-04-07 19:00:02,836 - convertor.app.core.database - INFO - Используется start_date: 2025-02-01 12:00:00
+2025-04-07 19:00:02,967 - convertor.app.core.database - INFO - Найдено нарушений: 1
+2025-04-07 19:00:02,968 - convertor.app.services.data_service - INFO - Found 1 new violations
+2025-04-07 19:00:03,362 - convertor.app.core.ftp_client - INFO - FTP подключение установлено
+2025-04-07 19:00:04,735 - convertor.app.core.ftp_client - INFO - Загружен файл 2309033_2025_02_11_10_07_38_13_04_00.jpg (121840 байт)
+2025-04-07 19:00:04,777 - convertor.app.services.api_service - INFO - Successfully sent
+Status: 200
+Headers: {'Content-Length': '0', 'Date': 'Mon, 07 Apr 2025 16:00:04 GMT', 'Keep-Alive': 'timeout=60', 'Connection': 'keep-alive'}
+Body: {
+  "raw_response": ""
+}
+2025-04-07 19:00:04,779 - convertor.app.core.database - INFO - Соединение с PostgreSQL закрыто
+2025-04-07 19:00:04,844 - convertor.app.core.ftp_client - INFO - FTP соединение закрыто
+2025-04-07 19:00:16,534 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\connection.json
+2025-04-07 19:00:16,534 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\configuration.json
+2025-04-07 19:00:16,914 - convertor.app.core.database - INFO - Успешное подключение к PostgreSQL
+2025-04-07 19:00:16,914 - convertor.app.core.database - INFO - 2025-02-20 12:00:00
+2025-04-07 19:00:16,915 - convertor.app.core.database - INFO - Используется start_date: 2025-02-20 12:00:00
+2025-04-07 19:00:17,046 - convertor.app.core.database - INFO - Найдено нарушений: 1
+2025-04-07 19:00:17,047 - convertor.app.services.data_service - INFO - Found 1 new violations
+2025-04-07 19:00:17,438 - convertor.app.core.ftp_client - INFO - FTP подключение установлено
+2025-04-07 19:00:20,204 - convertor.app.core.ftp_client - INFO - Загружен файл 2309033_2025_02_20_12_20_17_20_04_00.jpg (1662933 байт)
+2025-04-07 19:00:20,465 - convertor.app.services.api_service - INFO - Successfully sent
+Status: 200
+Headers: {'Content-Length': '0', 'Date': 'Mon, 07 Apr 2025 16:00:20 GMT', 'Keep-Alive': 'timeout=60', 'Connection': 'keep-alive'}
+Body: {
+  "raw_response": ""
+}
+2025-04-07 19:00:20,466 - convertor.app.core.database - INFO - Соединение с PostgreSQL закрыто
+2025-04-07 19:00:20,626 - convertor.app.core.ftp_client - INFO - FTP соединение закрыто
+2025-04-07 19:34:10,057 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\connection.json
+2025-04-07 19:34:10,058 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\configuration.json
+2025-04-07 19:34:10,074 - root - CRITICAL - Application failed: 'utf-8' codec can't decode byte 0xdd in position 59: invalid continuation byte
+Traceback (most recent call last):
+  File "C:\python_projects\ConvertertBSDUplo\convertor\main.py", line 20, in main
+    service = DataProcessingService(config)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\python_projects\ConvertertBSDUplo\convertor\app\services\data_service.py", line 19, in __init__
+    self._init_components()
+  File "C:\python_projects\ConvertertBSDUplo\convertor\app\services\data_service.py", line 39, in _init_components
+    self.db = DatabaseConnect(
+              ^^^^^^^^^^^^^^^^
+  File "C:\python_projects\ConvertertBSDUplo\convertor\app\core\database.py", line 20, in __init__
+    self.connection = self._connect()
+                      ^^^^^^^^^^^^^^^
+  File "C:\python_projects\ConvertertBSDUplo\convertor\app\core\database.py", line 32, in _connect
+    conn = psycopg2.connect(**self.config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\python_projects\ConvertertBSDUplo\.venv\Lib\site-packages\psycopg2\__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xdd in position 59: invalid continuation byte
+2025-04-07 19:34:35,192 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\connection.json
+2025-04-07 19:34:35,193 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\configuration.json
+2025-04-07 19:34:35,197 - root - CRITICAL - Application failed: 'utf-8' codec can't decode byte 0xdd in position 57: invalid continuation byte
+Traceback (most recent call last):
+  File "C:\python_projects\ConvertertBSDUplo\convertor\main.py", line 20, in main
+    service = DataProcessingService(config)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\python_projects\ConvertertBSDUplo\convertor\app\services\data_service.py", line 19, in __init__
+    self._init_components()
+  File "C:\python_projects\ConvertertBSDUplo\convertor\app\services\data_service.py", line 39, in _init_components
+    self.db = DatabaseConnect(
+              ^^^^^^^^^^^^^^^^
+  File "C:\python_projects\ConvertertBSDUplo\convertor\app\core\database.py", line 20, in __init__
+    self.connection = self._connect()
+                      ^^^^^^^^^^^^^^^
+  File "C:\python_projects\ConvertertBSDUplo\convertor\app\core\database.py", line 32, in _connect
+    conn = psycopg2.connect(**self.config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\python_projects\ConvertertBSDUplo\.venv\Lib\site-packages\psycopg2\__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xdd in position 57: invalid continuation byte
+2025-04-07 19:34:47,337 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\connection.json
+2025-04-07 19:34:47,338 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\configuration.json
+2025-04-07 19:34:47,342 - root - CRITICAL - Application failed: 'utf-8' codec can't decode byte 0xdd in position 57: invalid continuation byte
+Traceback (most recent call last):
+  File "C:\python_projects\ConvertertBSDUplo\convertor\main.py", line 20, in main
+    service = DataProcessingService(config)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\python_projects\ConvertertBSDUplo\convertor\app\services\data_service.py", line 19, in __init__
+    self._init_components()
+  File "C:\python_projects\ConvertertBSDUplo\convertor\app\services\data_service.py", line 39, in _init_components
+    self.db = DatabaseConnect(
+              ^^^^^^^^^^^^^^^^
+  File "C:\python_projects\ConvertertBSDUplo\convertor\app\core\database.py", line 20, in __init__
+    self.connection = self._connect()
+                      ^^^^^^^^^^^^^^^
+  File "C:\python_projects\ConvertertBSDUplo\convertor\app\core\database.py", line 32, in _connect
+    conn = psycopg2.connect(**self.config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\python_projects\ConvertertBSDUplo\.venv\Lib\site-packages\psycopg2\__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xdd in position 57: invalid continuation byte
+2025-04-07 19:35:08,533 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\connection.json
+2025-04-07 19:35:08,533 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\configuration.json
+2025-04-07 19:35:09,920 - convertor.app.core.database - INFO - Успешное подключение к PostgreSQL
+2025-04-07 19:35:09,920 - convertor.app.core.database - INFO - 2025-02-20 12:00:00
+2025-04-07 19:35:09,921 - convertor.app.core.database - INFO - Используется start_date: 2025-02-20 12:00:00
+2025-04-07 19:35:10,571 - convertor.app.core.database - INFO - Найдено нарушений: 1
+2025-04-07 19:35:10,572 - convertor.app.services.data_service - INFO - Found 1 new violations
+2025-04-07 19:35:12,873 - convertor.app.core.ftp_client - ERROR - Ошибка подключения FTP: [Errno 11001] getaddrinfo failed
+2025-04-07 19:35:12,873 - convertor.app.core.jpeg_parser - ERROR - Parser validation error: Invalid or empty input data
+2025-04-07 19:35:14,974 - convertor.app.services.api_service - ERROR - Request failed: HTTPConnectionPool(host='172.21.36.63', port=8080): Max retries exceeded with url: /send (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001BB51499850>: Failed to establish a new connection: [WinError 10061] Подключение не установлено, т.к. конечный компьютер отверг запрос на подключение'))
+2025-04-07 19:35:14,975 - convertor.app.core.database - INFO - Соединение с PostgreSQL закрыто
+2025-04-07 19:35:33,896 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\connection.json
+2025-04-07 19:35:33,897 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\configuration.json
+2025-04-07 19:35:35,256 - convertor.app.core.database - INFO - Успешное подключение к PostgreSQL
+2025-04-07 19:35:35,256 - convertor.app.core.database - INFO - 2025-02-20 12:00:00
+2025-04-07 19:35:35,257 - convertor.app.core.database - INFO - Используется start_date: 2025-02-20 12:00:00
+2025-04-07 19:35:35,889 - convertor.app.core.database - INFO - Найдено нарушений: 1
+2025-04-07 19:35:35,890 - convertor.app.services.data_service - INFO - Found 1 new violations
+2025-04-07 19:35:37,339 - convertor.app.core.ftp_client - INFO - FTP подключение установлено
+2025-04-07 19:35:48,424 - convertor.app.core.ftp_client - INFO - Загружен файл 2308011_2025_04_01_13_18_01_19_00_00.jpg (389290 байт)
+2025-04-07 19:35:50,484 - convertor.app.services.api_service - ERROR - Request failed: HTTPConnectionPool(host='172.21.36.63', port=8080): Max retries exceeded with url: /send (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000002A5B37F3F50>: Failed to establish a new connection: [WinError 10061] Подключение не установлено, т.к. конечный компьютер отверг запрос на подключение'))
+2025-04-07 19:35:50,485 - convertor.app.core.database - INFO - Соединение с PostgreSQL закрыто
+2025-04-07 19:35:50,787 - convertor.app.core.ftp_client - INFO - FTP соединение закрыто
+2025-04-07 19:36:11,556 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\connection.json
+2025-04-07 19:36:11,557 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\configuration.json
+2025-04-07 19:36:12,859 - convertor.app.core.database - INFO - Успешное подключение к PostgreSQL
+2025-04-07 19:36:12,860 - convertor.app.core.database - INFO - 2025-02-20 12:00:00
+2025-04-07 19:36:12,860 - convertor.app.core.database - INFO - Используется start_date: 2025-02-20 12:00:00
+2025-04-07 19:36:13,531 - convertor.app.core.database - INFO - Найдено нарушений: 1
+2025-04-07 19:36:13,532 - convertor.app.services.data_service - INFO - Found 1 new violations
+2025-04-07 19:36:14,807 - convertor.app.core.ftp_client - INFO - FTP подключение установлено
+2025-04-07 19:36:24,968 - convertor.app.core.ftp_client - INFO - Загружен файл 2308011_2025_04_01_13_18_01_19_00_00.jpg (389290 байт)
+2025-04-07 19:36:25,542 - convertor.app.services.api_service - INFO - Successfully sent
+Status: 200
+Headers: {'Content-Length': '0', 'Date': 'Mon, 07 Apr 2025 16:36:25 GMT', 'Keep-Alive': 'timeout=60', 'Connection': 'keep-alive'}
+Body: {
+  "raw_response": ""
+}
+2025-04-07 19:36:25,543 - convertor.app.core.database - INFO - Соединение с PostgreSQL закрыто
+2025-04-07 19:36:25,933 - convertor.app.core.ftp_client - INFO - FTP соединение закрыто
+2025-04-07 19:56:46,792 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\connection.json
+2025-04-07 19:56:46,792 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\configuration.json
+2025-04-07 19:56:48,234 - convertor.app.core.database - INFO - Успешное подключение к PostgreSQL
+2025-04-07 19:56:48,234 - convertor.app.core.database - INFO - 2025-02-20 12:00:00
+2025-04-07 19:56:48,235 - convertor.app.core.database - INFO - Используется start_date: 2025-02-20 12:00:00
+2025-04-07 19:56:48,961 - convertor.app.core.database - INFO - Найдено нарушений: 1
+2025-04-07 19:56:48,961 - convertor.app.services.data_service - INFO - Found 1 new violations
+2025-04-07 19:56:50,274 - convertor.app.core.ftp_client - INFO - FTP подключение установлено
+2025-04-07 19:57:00,991 - convertor.app.core.ftp_client - INFO - Загружен файл 2308011_2025_04_01_13_18_01_19_00_00.jpg (389290 байт)
+2025-04-07 19:57:01,029 - convertor.app.services.api_service - INFO - Successfully sent
+Status: 200
+Headers: {'Content-Length': '0', 'Date': 'Mon, 07 Apr 2025 16:57:00 GMT', 'Keep-Alive': 'timeout=60', 'Connection': 'keep-alive'}
+Body: {
+  "raw_response": ""
+}
+2025-04-07 19:57:01,029 - convertor.app.core.database - INFO - Соединение с PostgreSQL закрыто
+2025-04-07 19:57:01,431 - convertor.app.core.ftp_client - INFO - FTP соединение закрыто
+2025-04-07 20:25:35,953 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\connection.json
+2025-04-07 20:25:35,956 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\configuration.json
+2025-04-07 20:25:37,383 - convertor.app.core.database - INFO - Успешное подключение к PostgreSQL
+2025-04-07 20:25:37,383 - convertor.app.core.database - INFO - 2025-02-20 12:00:00
+2025-04-07 20:25:37,384 - convertor.app.core.database - INFO - Используется start_date: 2025-02-20 12:00:00
+2025-04-07 20:25:38,096 - convertor.app.core.database - INFO - Найдено нарушений: 1
+2025-04-07 20:25:38,096 - convertor.app.services.data_service - INFO - Found 1 new violations
+2025-04-07 20:25:39,498 - convertor.app.core.ftp_client - INFO - FTP подключение установлено
+2025-04-07 20:25:50,282 - convertor.app.core.ftp_client - INFO - Загружен файл 2308011_2025_04_01_13_18_01_19_00_00.jpg (389290 байт)
+2025-04-07 20:25:50,289 - convertor.app.core.jpeg_parser - ERROR - Критическая ошибка при формировании нарушения: 'v_camera'
+Traceback (most recent call last):
+  File "C:\python_projects\ConvertertBSDUplo\convertor\app\core\jpeg_parser.py", line 174, in _build_violation
+    "v_camera": device_info.get("name_speed_meter", violation["v_camera"]),
+                                                    ~~~~~~~~~^^^^^^^^^^^^
+KeyError: 'v_camera'
+2025-04-07 20:25:50,449 - convertor.app.services.api_service - ERROR - Server error 500: Internal Server Error
+Status: 500
+Headers: {'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Date': 'Mon, 07 Apr 2025 17:25:50 GMT', 'Connection': 'close'}
+Body: {
+  "timestamp": "2025-04-07T17:25:50.490+00:00",
+  "status": 500,
+  "error": "Internal Server Error",
+  "path": "/send"
+}
+2025-04-07 20:25:50,449 - convertor.app.core.database - INFO - Соединение с PostgreSQL закрыто
+2025-04-07 20:25:50,756 - convertor.app.core.ftp_client - INFO - FTP соединение закрыто
+2025-04-07 20:27:09,180 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\connection.json
+2025-04-07 20:27:09,180 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\configuration.json
+2025-04-07 20:27:10,559 - convertor.app.core.database - INFO - Успешное подключение к PostgreSQL
+2025-04-07 20:27:10,559 - convertor.app.core.database - INFO - 2025-02-20 12:00:00
+2025-04-07 20:27:10,559 - convertor.app.core.database - INFO - Используется start_date: 2025-02-20 12:00:00
+2025-04-07 20:27:11,197 - convertor.app.core.database - INFO - Найдено нарушений: 1
+2025-04-07 20:27:11,198 - convertor.app.services.data_service - INFO - Found 1 new violations
+2025-04-07 20:27:12,572 - convertor.app.core.ftp_client - INFO - FTP подключение установлено
+2025-04-07 20:27:23,403 - convertor.app.core.ftp_client - INFO - Загружен файл 2308011_2025_04_01_13_18_01_19_00_00.jpg (389290 байт)
+2025-04-07 20:27:23,409 - convertor.app.core.jpeg_parser - ERROR - Критическая ошибка при формировании нарушения: 'name_speed_meter'
+Traceback (most recent call last):
+  File "C:\python_projects\ConvertertBSDUplo\convertor\app\core\jpeg_parser.py", line 174, in _build_violation
+    "v_camera": device_info.get("name_speed_meter", violation["name_speed_meter"]),
+                                                    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+KeyError: 'name_speed_meter'
+2025-04-07 20:27:23,450 - convertor.app.services.api_service - ERROR - Server error 500: Internal Server Error
+Status: 500
+Headers: {'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Date': 'Mon, 07 Apr 2025 17:27:23 GMT', 'Connection': 'close'}
+Body: {
+  "timestamp": "2025-04-07T17:27:23.665+00:00",
+  "status": 500,
+  "error": "Internal Server Error",
+  "path": "/send"
+}
+2025-04-07 20:27:23,450 - convertor.app.core.database - INFO - Соединение с PostgreSQL закрыто
+2025-04-07 20:27:23,808 - convertor.app.core.ftp_client - INFO - FTP соединение закрыто
+2025-04-07 20:29:23,311 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\connection.json
+2025-04-07 20:29:23,311 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\configuration.json
+2025-04-07 20:29:25,710 - convertor.app.core.database - INFO - Успешное подключение к PostgreSQL
+2025-04-07 20:29:25,710 - convertor.app.core.database - INFO - 2025-02-20 12:00:00
+2025-04-07 20:29:25,711 - convertor.app.core.database - INFO - Используется start_date: 2025-02-20 12:00:00
+2025-04-07 20:29:26,379 - convertor.app.core.database - INFO - Найдено нарушений: 1
+2025-04-07 20:29:26,380 - convertor.app.services.data_service - INFO - Found 1 new violations
+2025-04-07 20:29:27,772 - convertor.app.core.ftp_client - INFO - FTP подключение установлено
+2025-04-07 20:29:44,805 - convertor.app.core.ftp_client - INFO - Загружен файл 2308011_2025_04_01_13_18_01_19_00_00.jpg (389290 байт)
+2025-04-07 20:29:44,809 - convertor.app.core.jpeg_parser - ERROR - Критическая ошибка при формировании нарушения: 'v_camera'
+Traceback (most recent call last):
+  File "C:\python_projects\ConvertertBSDUplo\convertor\app\core\jpeg_parser.py", line 174, in _build_violation
+    "v_camera": device_info.get("name_speed_meter", violation["v_camera"]),
+                                                    ~~~~~~~~~^^^^^^^^^^^^
+KeyError: 'v_camera'
+2025-04-07 20:29:44,851 - convertor.app.services.api_service - ERROR - Server error 500: Internal Server Error
+Status: 500
+Headers: {'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Date': 'Mon, 07 Apr 2025 17:29:44 GMT', 'Connection': 'close'}
+Body: {
+  "timestamp": "2025-04-07T17:29:44.864+00:00",
+  "status": 500,
+  "error": "Internal Server Error",
+  "path": "/send"
+}
+2025-04-07 20:29:44,851 - convertor.app.core.database - INFO - Соединение с PostgreSQL закрыто
+2025-04-07 20:29:45,271 - convertor.app.core.ftp_client - INFO - FTP соединение закрыто
+2025-04-07 20:42:43,172 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\connection.json
+2025-04-07 20:42:43,173 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\configuration.json
+2025-04-07 20:42:45,909 - convertor.app.core.database - INFO - Успешное подключение к PostgreSQL
+2025-04-07 20:42:45,910 - convertor.app.core.database - INFO - 2025-02-20 12:00:00
+2025-04-07 20:42:45,911 - root - CRITICAL - Application failed: JpegParser.__init__() takes 1 positional argument but 2 were given
+Traceback (most recent call last):
+  File "C:\python_projects\ConvertertBSDUplo\convertor\main.py", line 20, in main
+    service = DataProcessingService(config)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\python_projects\ConvertertBSDUplo\convertor\app\services\data_service.py", line 19, in __init__
+    self._init_components()
+  File "C:\python_projects\ConvertertBSDUplo\convertor\app\services\data_service.py", line 45, in _init_components
+    self.parser = JpegParser({
+                  ^^^^^^^^^^^^
+TypeError: JpegParser.__init__() takes 1 positional argument but 2 were given
+2025-04-07 20:47:03,158 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\connection.json
+2025-04-07 20:47:03,159 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\configuration.json
+2025-04-07 20:47:04,554 - convertor.app.core.database - INFO - Успешное подключение к PostgreSQL
+2025-04-07 20:47:04,554 - convertor.app.core.database - INFO - 2025-02-20 12:00:00
+2025-04-07 20:47:04,555 - root - CRITICAL - Application failed: JpegParser.__init__() takes 1 positional argument but 2 were given
+Traceback (most recent call last):
+  File "C:\python_projects\ConvertertBSDUplo\convertor\main.py", line 20, in main
+    service = DataProcessingService(config)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\python_projects\ConvertertBSDUplo\convertor\app\services\data_service.py", line 19, in __init__
+    self._init_components()
+  File "C:\python_projects\ConvertertBSDUplo\convertor\app\services\data_service.py", line 45, in _init_components
+    self.parser = JpegParser({
+                  ^^^^^^^^^^^^
+TypeError: JpegParser.__init__() takes 1 positional argument but 2 were given
+2025-04-07 20:51:00,700 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\connection.json
+2025-04-07 20:51:00,701 - convertor.app.utils.config_loader - INFO - Успешно загружен C:\python_projects\ConvertertBSDUplo\convertor\conf\configuration.json
+2025-04-07 20:51:03,554 - convertor.app.core.database - INFO - Успешное подключение к PostgreSQL
+2025-04-07 20:51:03,555 - convertor.app.core.database - INFO - 2025-02-20 12:00:00
+2025-04-07 20:51:03,555 - root - CRITICAL - Application failed: JpegParser.__init__() takes 1 positional argument but 2 were given
+Traceback (most recent call last):
+  File "C:\python_projects\ConvertertBSDUplo\convertor\main.py", line 20, in main
+    service = DataProcessingService(config)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\python_projects\ConvertertBSDUplo\convertor\app\services\data_service.py", line 19, in __init__
+    self._init_components()
+  File "C:\python_projects\ConvertertBSDUplo\convertor\app\services\data_service.py", line 45, in _init_components
+    self.parser = JpegParser({
+                  ^^^^^^^^^^^^
+TypeError: JpegParser.__init__() takes 1 positional argument but 2 were given
