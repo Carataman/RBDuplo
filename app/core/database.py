@@ -36,32 +36,93 @@ class DatabaseConnect:
             logger.error(f"Ошибка подключения: {e}")
             raise
 
+    # def get_new_violations(self) -> List[Dict]:
+    #
+    #     """Получает данные из БД с учётом start_date из конфига"""
+    #     if not self.connection:
+    #         logger.error("Нет подключения к БД")
+    #         return []
+    #
+    #     try:
+    #
+    #         # Правильное получение start_date из вложенной структуры
+    #
+    #
+    #         logger.info(f"Используется start_date: {self.start_date}")
+    #
+    #         with self.connection.cursor(cursor_factory=DictCursor) as cursor:
+    #             cursor.execute("""
+    #                 SELECT id, file_path, timestamp
+    #                 FROM main.materials
+    #                 WHERE (timestamp >= %s
+    #                 ) AND (file_type = 1 OR file_type = 2) ORDER BY timestamp ASC
+    #                 LIMIT 1;
+    #             """, (self.start_date,))
+    #
+    #             result = cursor.fetchall()
+    #             logger.info(f"Найдено нарушений: {len(result)}")
+    #             return result
+    #
+    #     except psycopg2.Error as e:
+    #         logger.error(f"Ошибка выполнения запроса: {e}")
+    #         return []
     def get_new_violations(self) -> List[Dict]:
-
-        """Получает данные из БД с учётом start_date из конфига"""
+        """
+        Получает данные из БД с учётом start_date из конфига.
+        Возвращает список словарей с данными о нарушениях, включая оба файла.
+        """
         if not self.connection:
             logger.error("Нет подключения к БД")
             return []
 
         try:
-
-            # Правильное получение start_date из вложенной структуры
-
-
             logger.info(f"Используется start_date: {self.start_date}")
 
             with self.connection.cursor(cursor_factory=DictCursor) as cursor:
                 cursor.execute("""
-                    SELECT id, file_path, timestamp 
-                    FROM main.materials 
-                    WHERE timestamp >= %s 
-                    ORDER BY timestamp ASC 
+                    SELECT 
+                        m1.id as original_id,
+                        m1.file_path as original_path,
+                        m1.timestamp,
+                        m1.target_id,
+                        m1.event_id,
+                        m2.id as fr_id,
+                        m2.file_path as fr_path
+                    FROM main.materials m1
+                    LEFT JOIN main.materials m2 
+                        ON m1.target_id = m2.target_id 
+                        AND m1.event_id = m2.event_id
+                        AND m2.file_type = 2
+                    WHERE m1.timestamp >= %s
+                        AND m1.file_type = 1
+                    ORDER BY m1.timestamp ASC
                     LIMIT 1;
                 """, (self.start_date,))
 
-                result = cursor.fetchall()
-                logger.info(f"Найдено нарушений: {len(result)}")
-                return result
+                rows = cursor.fetchall()
+                violations = []
+
+                for row in rows:
+                    violation = {
+                        'id': row['original_id'],
+                        'timestamp': row['timestamp'],
+                        'target_id': row['target_id'],
+                        'event_id': row['event_id'],
+                        'files': {
+                            'original': {
+                                'id': row['original_id'],
+                                'path': row['original_path']
+                            },
+                            'fr': {
+                                'id': row['fr_id'],
+                                'path': row['fr_path']
+                            } if row['fr_id'] else None
+                        }
+                    }
+                    violations.append(violation)
+
+                logger.info(f"Найдено нарушений: {len(violations)}")
+                return violations
 
         except psycopg2.Error as e:
             logger.error(f"Ошибка выполнения запроса: {e}")

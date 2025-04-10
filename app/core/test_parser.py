@@ -7,18 +7,22 @@ def test_parser():
     test_file = Path("2309021_2025_01_30_16_17_06_31_01_00.jpg")
     file_data = test_file.read_bytes()
 
-    # 2. Парсим данные
     parser = JpegParser()
-    parsed_objects = parser.parse(file_data)
 
-    #print("Результат парсинга:")
-    print(json.dumps(parsed_objects, indent=2, ensure_ascii=False))
+    # Загружаем файл
+    with open(test_file, 'rb') as f:
+        data = f.read()
 
-    # 3. Проверяем структурированные данные
-    structured_data = parser._parse_json()
-    print("\nСтруктурированные данные:")
-    print(json.dumps(structured_data, indent=2, ensure_ascii=False))
+    # Получаем сегменты в виде байтов (по умолчанию)
+    byte_segments = parser._extract_jpeg_segments(data)
+    print(f"Найдено {len(byte_segments)} сегментов в бинарном формате")
 
+
+
+    segments = parser._extract_jpeg_segments(data)
+    base64_segments = parser.segments_to_base64(segments)
+
+    print(base64_segments[1])
 
 if __name__ == "__main__":
     import json
